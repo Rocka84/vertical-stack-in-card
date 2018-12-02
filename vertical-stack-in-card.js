@@ -64,30 +64,38 @@ class VerticalStackInCard extends HTMLElement {
     }
 
     _card(element) {
+        let root;
         if (element.shadowRoot) {
-            if (!element.shadowRoot.querySelector('ha-card')) {
-                let searchEles = element.shadowRoot.getElementById("root");
-                if (!searchEles) {
-                    searchEles = element.shadowRoot.getElementById("card");
-                }
-                if (!searchEles) return;
-                searchEles = searchEles.childNodes;
-                for (let i = 0; i < searchEles.length; i++) {
-                    searchEles[i].style.margin = "0px";
-                    this._card(searchEles[i]);
-                }
-            } else {
-                element.shadowRoot.querySelector('ha-card').style.boxShadow = 'none';
-            }
+            root = element.shadowRoot;
         } else {
-            let searchEles = element.childNodes;
-            for (let i = 0; i < searchEles.length; i++) {
-                searchEles[i].style.margin = "0px";
-                this._card(searchEles[i]);
-            }
+            root = element;
+        }
+
+        let haCard = root.querySelector('ha-card');
+
+        if (haCard) {
+            haCard.style.boxShadow = 'none';
+            return;
+        }
+
+        if (!root.getElementById) {
+            return;
+        }
+
+        let searchEles = root.getElementById("root");
+        if (!searchEles) {
+            searchEles = root.getElementById("card");
+        }
+        if (!searchEles) {
+            return;
+        }
+
+        for (let i = 0; i < searchEles.length; i++) {
+            searchEles[i].style.margin = "0px";
+            this._card(searchEles[i]);
         }
     }
-    
+
     getCardSize() {
         let totalSize = 0;
         this._refCards.forEach((element) => {
